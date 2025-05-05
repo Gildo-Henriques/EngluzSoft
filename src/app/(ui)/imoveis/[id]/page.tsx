@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Button } from '../../../../components/ui/button';
 
-// Interface para os dados dos imóveis (copiada do ImoveisDetails)
+// Interface para os dados dos imóveis
 interface Imovel {
   id: number;
   title: string;
@@ -23,8 +23,7 @@ interface Imovel {
   yearBuilt?: number;
 }
 
-// Dados dos imóveis (copiados do ImoveisDetails para simulação)
-// Em uma aplicação real, você pode buscar esses dados de uma API ou banco de dados
+// Dados dos imóveis
 const imoveisData: Imovel[] = [
   {
     id: 1,
@@ -157,13 +156,21 @@ const imoveisData: Imovel[] = [
     yearBuilt: 2022,
   },
 ];
+
+
+// Interface para as props da página
 interface PageProps {
-  params: {id: string}
+  params: { id: string };
 }
 
 // Componente da página de detalhes
-export default async function ImovelDetalhes({ params }: PageProps ) {
-  const imovel = imoveisData.find((item) => item.id === parseInt(params.id));
+export default function ImovelDetalhes({ params }: PageProps) {
+  const id = parseInt(params.id);
+  if (isNaN(id)) {
+    notFound(); // Retorna 404 se o ID não for um número válido
+  }
+
+  const imovel = imoveisData.find((item) => item.id === id);
 
   if (!imovel) {
     notFound(); // Retorna 404 se o imóvel não for encontrado
@@ -176,7 +183,6 @@ export default async function ImovelDetalhes({ params }: PageProps ) {
       </h1>
       {/* Grid de Imagens */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        
         {imovel.images.map((image, index) => (
           <div
             key={index}
