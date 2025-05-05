@@ -18,10 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <Head>
         <link rel="shortcut icon" href="/cosmos-head.svg" type="image/x-icon" />
-      <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Geist+Sans:wght@400;700&display=swap"
-        />
+      
         
       </Head>
       <body

@@ -265,7 +265,7 @@ export default function ImoveisDetails() {
   useEffect(() => {
     const slideInterval = setInterval(nextSlide, 4000);
     return () => clearInterval(slideInterval);
-  }, [currentSlide]);
+  }, [nextSlide]);
 
   return (
     <section className="w-full space-y-5 px-4 sm:px-6 md:px-10 lg:px-16 2xl:px-28 flex flex-col mt-44 lg:mt-0">

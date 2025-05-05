@@ -10,11 +10,7 @@ const slides = [
   "/images/sonho.jpg",
   "/images/talento.jpg",
 ];
-const card = [
-  "/images/predio.jpg",
-  "/images/startup.jpg",
-  "/images/talento.jpg",
-];
+
 
 export default function Hero() {
   return (
