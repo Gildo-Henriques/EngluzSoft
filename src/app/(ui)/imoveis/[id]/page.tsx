@@ -157,9 +157,12 @@ const imoveisData: Imovel[] = [
     yearBuilt: 2022,
   },
 ];
+interface PageProps {
+  params: {id: string}
+}
 
 // Componente da página de detalhes
-export default function ImovelDetalhes({ params }: { params: { id: string } }) {
+export default async function ImovelDetalhes({ params }: PageProps ) {
   const imovel = imoveisData.find((item) => item.id === parseInt(params.id));
 
   if (!imovel) {
