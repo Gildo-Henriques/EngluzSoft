@@ -1,0 +1,85 @@
+[
+  {
+    "id": 1,
+    "name": "João Pereira",
+    "focus": "Fintech",
+    "budget": "$200,000",
+    "interests": ["Pagamentos digitais", "Criptomoedas"],
+    "feed": {
+      "startups": [
+        {
+          "id": 101,
+          "name": "PaySmart",
+          "sector": "Fintech",
+          "capital": "$10,00",
+          "investment_needed": "$50,000",
+          "resumo": "Uma solução inovadora para pagamentos móveis sem taxas ocultas.",
+          "description": "Nossa plataforma revoluciona a forma como você realiza pagamentos, oferecendo um sistema seguro, rápido e totalmente livre de taxas ocultas. Com uma interface intuitiva e tecnologia de ponta, garantimos transações simplificadas e acessíveis para usuários e comerciantes. Seja para compras online, transferências entre amigos ou pagamentos em estabelecimentos, nossa solução proporciona liberdade financeira e transparência total, permitindo que você controle seu dinheiro sem surpresas desagradáveis.",
+          "image": "/banners/link.jpg",
+          "logo": "/logos/link.png",
+          "businessplan": "Link para o plano de negócios",
+          "projects": ["https://github.com/paysmart/project"],
+          "github": "https://github.com/paysmart",
+          "team": ["João Pereira", "Maria Souza"]
+        },
+        {
+          "id": 102,
+          "name": "Morphosis",
+          "sector": "Tecnológico",
+          "capital": "$10,00",
+          "investment_needed": "$10,000",
+          "resumo": "Banco digital descentralizado baseado em blockchain.",
+          "description": "Nossa plataforma revoluciona a forma como você realiza pagamentos, oferecendo um sistema seguro, rápido e totalmente livre de taxas ocultas. Com uma interface intuitiva e tecnologia de ponta, garantimos transações simplificadas e acessíveis para usuários e comerciantes. Seja para compras online, transferências entre amigos ou pagamentos em estabelecimentos, nossa solução proporciona liberdade financeira e transparência total, permitindo que você controle seu dinheiro sem surpresas desagradáveis.",
+          "image": "/banners/cavaleiros.jpg",
+          "logo": "/logos/morfo.jpg",
+          "businessplan": "Link para o plano de negócios",
+          "projects": ["https://github.com/paysmart/project"],
+          "github": "https://github.com/paysmart",
+          "team": [
+            {"name": "Justino Soares", "role": "CEO/WebDesigner"},
+            {"name": "Mário Lino", "role": "CTO/DEV-Backend"},
+            {"name": "Romão Quilamiquiza", "role": "Dev Backend"}
+          ]
+        },
+        {
+          "id": 103,
+          "name": "Cygnus",
+          "sector": "Tecnología",
+          "capital": "$10,00",
+          "investment_needed": "$100,000",
+          "resumo": "Banco digital descentralizado baseado em blockchain.",
+          "description": "Nossa plataforma revoluciona a forma como você realiza pagamentos, oferecendo um sistema seguro, rápido e totalmente livre de taxas ocultas. Com uma interface intuitiva e tecnologia de ponta, garantimos transações simplificadas e acessíveis para usuários e comerciantes. Seja para compras online, transferências entre amigos ou pagamentos em estabelecimentos, nossa solução proporciona liberdade financeira e transparência total, permitindo que você controle seu dinheiro sem surpresas desagradáveis.",
+          "image": "/banners/cygnus.png",
+          "logo": "/logos/cy.png",
+          "businessplan": "Link para o plano de negócios",
+          "projects": ["https://github.com/paysmart/project"],
+          "github": "https://github.com/paysmart",
+          "team": [
+            {"name": "Gildo Cabeto", "role": "CEO/WebDesigner"},
+            {"name": "Etiene Domingos", "role": "CTO/DEV-Backend"},
+            {"name": "Maurício Damião", "role": "CMO/Marketer"},
+            {"name": "Melquesedec Cassoma", "role": "CFO/Designer-gráfico"}
+          ]
+        }
+      ],
+      "events": [
+        {
+          "id": 201,
+          "title": "Investindo no Futuro da Energia",
+          "host": "Carlos Almeida",
+          "date": "2025-04-15",
+          "description": "Discussão sobre investimentos no setor de energia limpa."
+        }
+      ],
+      "talents": [
+        {
+          "id": 301,
+          "name": "Miguel Santos",
+          "skill": "Desenvolvimento Web",
+          "experience": "5 anos",
+          "availability": "Freelancer"
+        }
+      ]
+    }
+  }
+]
