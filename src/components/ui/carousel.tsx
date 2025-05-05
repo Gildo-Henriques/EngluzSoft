@@ -113,11 +113,7 @@ export function CarouselHeroCard() {
   };
 
   // Autoplay
-  useEffect(() => {
-    const slideInterval = setInterval(nextSlide, 4000);
-    return () => clearInterval(slideInterval);
-  }, [currentSlide]);
-
+  
   return (
     <section className="w-full -mt-28 absolute z-10 flex justify-center">
       <div className="bg-muted flex flex-col justify-between gap-x-5 px-5 sm:px-10 sm:w-3/4 w-[95%] py-5 space-y-5 rounded-xl">
