@@ -87,7 +87,7 @@ export default function HeaderNavbar() {
 
   return (
     <header
-      className={`fixed w-full h-14 flex shadow-2xs items-center z-50 transition-all duration-300 px-4 sm:px-6 md:px-10 lg:px-16 2xl:px-28 ${
+      className={`fixed w-full h-14 flex shadow-2xs items-center z-50 transition-all duration-300 px-4 sm:px-6 md:px-10 top-0 lg:px-16 2xl:px-28 ${
         isScrolled ? 'bg-white text-black' : 'bg-transparent text-white'
       }`}
     >

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Head from "next/head";
 import HeaderNavbar from "../../components/ui/navbar";
 export const metadata: Metadata = {
-  title: "COSMOS",
-  description: "Plataforma de conexão",
+  title: "EngluzSoft",
+  description: "Plataforma de vendas de imóveis",
   icons: {
     icon: "/cosmos-head.svg",
   }

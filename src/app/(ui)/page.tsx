@@ -1,5 +1,4 @@
 import Hero from "@/components/ui/Hero";
-import Image from "next/image"
 import ImoveisDetails from "../../components/ui/imoveisDetails";
 
 export default function Home() {

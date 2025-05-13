@@ -1,12 +1,15 @@
+// app/layout.tsx
 import type { Metadata } from "next";
-import Head from "next/head";
-import "./globals.css";
+import HeaderNavbar from "@/components/ui/navbar";
+import "./globals.css"; // Ajuste o caminho se necessário
+
+
 export const metadata: Metadata = {
   title: "COSMOS",
   description: "Plataforma de conexão",
   icons: {
     icon: "/cosmos-head.svg",
-  }
+  },
 };
 
 export default function RootLayout({
@@ -16,14 +19,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Head>
-        <link rel="shortcut icon" href="/cosmos-head.svg" type="image/x-icon" />
-     
-      </Head>
-      <body
-        className={`antialiased`}
-      >
-
+      <body className="antialiased" suppressHydrationWarning={true}>
+        <HeaderNavbar />
         {children}
       </body>
     </html>

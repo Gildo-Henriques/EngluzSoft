@@ -11,6 +11,8 @@ export default function Signout(){
             </div>
             <Input type="text" className="" placeholder="Nome completo" />
             <Input type="email" className="" placeholder="email" />
+            <Input type="tel" className="" placeholder="Nº telefone" />
+            <Input type="tel" className="" placeholder="Whatsapp" />
             <Input type="password" className="shadow-2xs" placeholder="criar senha"/>
             <Input type="password" className="shadow-2xs" placeholder="confirmar senha"/>
             <div className="text-center">
