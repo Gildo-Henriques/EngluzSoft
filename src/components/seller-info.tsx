@@ -1,25 +1,15 @@
-// src/components/seller-info.tsx
 "use client";
+import Link from "next/link";
 import { FC, useState } from "react";
 import Image from "next/image";
 import { Phone, MapPin, MessageCircle, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-interface Seller {
-  id: number;
-  name: string;
-  photo: string;
-  contact: {
-    whatsapp: string;
-    phone: string;
-    location: string;
-  };
-}
+import { Seller } from "@/types"; // Importe do arquivo de tipos
 
 interface SellerInfoProps {
   seller: Seller;
-  onUpdate?: (updatedSeller: Seller) => void; // Tornar opcional
+  onUpdate?: (updatedSeller: Seller) => void;
   readOnly?: boolean;
 }
 
@@ -52,9 +42,12 @@ const SellerInfo: FC<SellerInfoProps> = ({ seller, onUpdate, readOnly = false })
   };
 
   return (
-    <div className="bg-white rounded-lg overflow-hidden h-auto shadow-lg">
+    <div className="rounded-lg flex flex-col items-center justify-center overflow-hidden h-auto">
       {isEditing && !readOnly ? (
-        <div className="flex flex-col gap-4 p-6">
+        <div className="flex flex-col bg-white py-8 w-full *:max-w-2xl items-center gap-4 p-6">
+          <div className="w-full">
+                      <h2>Editar Perfil</h2>
+          </div>
           <Input
             placeholder="Nome"
             value={formData.name}
@@ -95,49 +88,49 @@ const SellerInfo: FC<SellerInfoProps> = ({ seller, onUpdate, readOnly = false })
               })
             }
           />
-          <Button onClick={handleEdit}>Salvar</Button>
+          <Button className="mt-4 bg-blue-500 hover:bg-blue-600 w-full text-white"  onClick={handleEdit}>Salvar</Button>
         </div>
       ) : (
-        <div className="flex flex-col items-center relative">
-          <div className="relative w-full h-72">
+        <div className="flex flex-col items-center justify-center w-full relative">
+          <div className="relative flex justify-center intems-end bg-gradient-to-r to-blue-950 from-blue-500 w-full h-52">
             {seller.photo ? (
               <Image
                 src={seller.photo}
                 alt={`Foto de ${seller.name}`}
-                fill
-                className="object-cover"
-                priority
+                width={500}
+                height={500}
+                className="size-28 object-cover rounded-full -bottom-14 absolute"
+               priority
               />
             ) : (
               <div className="w-full h-full bg-gray-200 flex items-center justify-center">
                 <span className="text-gray-500">Sem foto</span>
               </div>
             )}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="bg-blue-500 text-white rounded-full w-20 h-20 flex items-center justify-center text-2xl font-bold">
-                {getInitials(seller.name)}
-              </div>
-            </div>
+
           </div>
-          <h3 className="text-xl font-bold mb-2 mt-4">{seller.name}</h3>
-          <div className="flex flex-col gap-2 text-gray-600 py-5">
-            <a
+          <h3 className="text-xl font-bold mb-2 mt-16">{seller.name}</h3>
+          <div className="flex w-full">
+          <div className="flex lg:justify-between justify-center items-center flex-col lg:flex-row w-full *:flex *:sm:flex-col *:flex-row  gap-2 text-gray-600 py-5">
+            <Link
               href={`https://wa.me/${seller.contact.whatsapp}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2"
             >
-              <MessageCircle size={20} /> {seller.contact.whatsapp}
-            </a>
-            <a href={`tel:${seller.contact.phone}`} className="flex items-center gap-2">
-              <Phone size={20} /> {seller.contact.phone}
-            </a>
+              <MessageCircle size={20} /> <p>{seller.contact.whatsapp}</p>
+            </Link>
+            <Link href={`tel:${seller.contact.phone}`} className="flex items-center gap-2">
+              <Phone size={20} /> <p> {seller.contact.phone}</p>
+            </Link>
             <div className="flex items-center gap-2">
-              <MapPin size={20} /> {seller.contact.location}
+              <MapPin size={20} /> <p> {seller.contact.location}</p>
             </div>
           </div>
+          </div>
+
           {!readOnly && (
-            <Button onClick={handleEdit} className="mt-4 mb-5">
+            <Button onClick={handleEdit} className="mt-4 bg-blue-500 hover:bg-blue-600 text-white mb-5">
               <Edit size={20} className="mr-2" /> Editar Perfil
             </Button>
           )}

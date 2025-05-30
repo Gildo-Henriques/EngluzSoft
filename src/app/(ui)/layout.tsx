@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Head from "next/head";
 import HeaderNavbar from "../../components/ui/navbar";
+import Footer from "@/components/ui/footer";
 export const metadata: Metadata = {
   title: "EngluzSoft",
   description: "Plataforma de vendas de imóveis",
@@ -26,6 +27,7 @@ export default function RootLayout({
       >
                 <HeaderNavbar />
         {children}
+        <Footer/>
       </body>
     </html>
   );

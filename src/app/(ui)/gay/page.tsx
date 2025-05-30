@@ -1,4 +1,3 @@
-// pages/imoveis/contactar/[sellerId].tsx
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import SellerInfo from "@/components/seller-info";
@@ -10,8 +9,6 @@ interface PageProps {
 }
 
 export default function ContactarVendedor({ params }: PageProps) {
-  console.log("Params em ContactarVendedor:", params);
-
   const sellerId = parseInt(params.sellerId);
   if (isNaN(sellerId)) {
     console.error("sellerId inválido:", params.sellerId);
@@ -19,19 +16,12 @@ export default function ContactarVendedor({ params }: PageProps) {
   }
 
   const imoveis = imoveisData.filter((item) => item.seller.id === sellerId);
-  console.log("Imóveis encontrados para sellerId:", imoveis);
-
   if (imoveis.length === 0) {
     console.error("Nenhum imóvel encontrado para sellerId:", sellerId);
-    return <p className="text-red-500 text-center py-10">Vendedor não encontrado ou sem imóveis cadastrados.</p>;
+    notFound();
   }
 
   const seller = imoveis[0].seller;
-  if (!seller) {
-    console.error("Vendedor não encontrado para sellerId:", sellerId);
-    return <p className="text-red-500 text-center py-10">Erro ao carregar vendedor.</p>;
-  }
-
   return (
     <section className="w-full px-4 sm:px-6 md:px-10 lg:px-16 2xl:px-28 py-10 flex flex-col space-y-8">
       <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold titillium-web-semibold">

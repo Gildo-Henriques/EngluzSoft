@@ -41,7 +41,7 @@ export function CarouselHero({ children }: CarouselProps) {
   return (
     <div className="max-w-full flex flex-col items-center justify-center relative">
       <div className="overflow-hidden h-[500px] relative w-full">
-        <div className="h-full flex-col w-full z-10 text-white absolute flex items-center justify-center top-0 left-0 bg-gradient-to-t from-black/90 to-black/50 space-y-2">
+        <div className="h-full flex-col w-full z-10 text-white absolute px-5 flex items-center justify-center top-0 left-0 bg-gradient-to-t from-black/90 to-black/50 space-y-2">
           <span className="border rounded-full px-5 py-1">Sistema de geoprocessamento imobiliário</span>
           <h1 className="sm:text-4xl text-3xl text-center titillium-web-semibold">
             Encontre, compre e venda imóveis em Luanda com <br className="lg:flex hidden" /> segurança garantida

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./button";
-import { BadgeEuro, Banknote, Ellipsis, HousePlus, InspectionPanel, User } from "lucide-react";
+import { BadgeEuro, Banknote, HousePlus, InspectionPanel, User } from "lucide-react";
 import { imoveisData, Imovel } from "@/data/imoveis";
 
 interface Filter {
@@ -19,7 +19,7 @@ const filters: Filter[] = [
   { id: "renda", label: "A renda", icon: <Banknote size={20} /> },
   { id: "apartamento", label: "Apartamento", icon: <HousePlus size={20} /> },
   { id: "terreno", label: "Terreno", icon: <InspectionPanel size={20} /> },
-  { id: "mais", label: "Ver mais", icon: <Ellipsis size={20} /> },
+
 ];
 
 function ImovelCard({ imovel }: { imovel: Imovel }) {
@@ -65,7 +65,7 @@ export default function ImoveisDetails() {
 
   const filteredImoveis = [...imoveisData, ...dynamicImoveis].filter(
     (imovel) =>
-      activeFilter === "mais" ||
+      activeFilter === "destaque" ||
       activeFilter === "apartamento" ||
       imovel.category === activeFilter
   );
@@ -85,9 +85,12 @@ export default function ImoveisDetails() {
 
   return (
     <section className="w-full space-y-5 px-4 sm:px-6 md:px-10 lg:px-16 2xl:px-28 flex flex-col mt-44 lg:mt-0">
-      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold titillium-web-semibold">
+      <h2 className="text-2xl text-center sm:text-3xl lg:text-4xl font-semibold titillium-web-semibold">
         O que está procurando?
       </h2>
+      <div className="lg:mt-10 mt-5 text-center text-gray-700 lg:px-20 px-0">
+          <p>Está à procura de uma casa para morar, um terreno para investir ou quer rentabilizar o seu imóvel? Na EngluzSoft, ajudamos você a encontrar o que precisa com rapidez, segurança e total transparência. Seja para comprar, alugar ou colocar o seu espaço para renda, estamos prontos para conectar você às melhores oportunidades do mercado imobiliário angolano.</p>
+      </div>
       <div
         className="flex flex-wrap justify-center gap-2 sm:gap-4 bg-gray-100 lg:bg-transparent rounded-lg p-2 sm:p-4"
         role="tablist"
@@ -143,7 +146,7 @@ export default function ImoveisDetails() {
               <ChevronRight size={24} />
             </Button>
           </div>
-          <div className="flex justify-center mt-2">
+          <div className="flex flex-wrap justify-center mt-2">
             {filteredImoveis.map((_, index) => (
               <div
                 key={index}

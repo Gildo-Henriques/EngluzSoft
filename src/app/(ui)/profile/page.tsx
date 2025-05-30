@@ -2,32 +2,13 @@
 import { useState } from "react";
 import SellerInfo from "@/components/seller-info";
 import PropertyList from "@/components/property-list";
-
-interface Seller {
-  name: string;
-  photo: string;
-  contact: {
-    whatsapp: string;
-    phone: string;
-    location: string;
-  };
-}
-
-interface Property {
-  id: string;
-  title: string;
-  description: string;
-  salePrice?: number;
-  rentPrice?: number;
-  bedrooms: number;
-  area: number;
-  photos: string[];
-  location: string;
-  coordinates?: { lat: number; lng: number };
-}
+import PropertyForm from "@/components/property-form";
+import { Seller, Imovel } from "@/types";
+import { imoveisData } from "@/data/imoveis";
 
 export default function SellerProfile() {
   const [seller, setSeller] = useState<Seller>({
+    id: 1,
     name: "Domingos Afonso",
     photo: "/images/Vera.jpeg",
     contact: {
@@ -37,51 +18,50 @@ export default function SellerProfile() {
     },
   });
 
-  const [properties, setProperties] = useState<Property[]>([
-    {
-      id: "1",
-      title: "Apartamento em Talatona",
-      description: "Apartamento moderno com vista para o mar, perto do Belas Shopping.",
-      salePrice: 150000000,
-      rentPrice: 600000,
-      bedrooms: 3,
-      area: 120,
-      photos: ["/images/rosa6.jpg", "/images/rosa5.jpg"],
-      location: "Talatona, Luanda, Angola",
-      coordinates: { lat: -8.9147, lng: 13.1900 },
-    },
-    {
-      id: "2",
-      title: "Casa em Benguela",
-      description: "Casa espaçosa ideal para famílias, com quintal.",
-      salePrice: 80000000,
-      bedrooms: 4,
-      area: 200,
-      photos: ["/images/rosa5.jpg", "/images/rosa6.jpg"],
-      location: "Benguela, Angola",
-      coordinates: { lat: -12.5783, lng: 13.4055 },
-    },
-  ]);
+  const [properties, setProperties] = useState<Imovel[]>(
+    imoveisData.filter((imovel) => imovel.seller.id === seller.id)
+  );
+
+  const [showPropertyForm, setShowPropertyForm] = useState(false);
 
   const handleUpdateSeller = (updatedSeller: Seller) => {
     setSeller(updatedSeller);
   };
 
-  const handleDeleteProperty = (id: string) => {
+  const handleDeleteProperty = (id: number) => {
     setProperties(properties.filter((prop) => prop.id !== id));
   };
 
+  const handleCreateProperty = (newProperty: Imovel) => {
+    setProperties([...properties, { ...newProperty, id: Date.now() }]);
+    setShowPropertyForm(false);
+  };
+
   return (
-    <div className="max-w-7xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">Perfil do Vendedor</h1>
-      <div className="flex flex-col md:flex-row gap-6">
-        {/* SellerInfo à esquerda */}
-        <SellerInfo seller={seller} onUpdate={handleUpdateSeller} />
-        {/* PropertyList à direita */}
-        <div className="flex-1">
-          <PropertyList properties={properties} onDelete={handleDeleteProperty} />
-        </div>
-      </div>
+    <body className="bg-slate-100">
+      <div className="max-w-7xl mx-auto p-6 ">
+      <h1 className="text-3xl font-bold mt-20 mb-6">Perfil </h1>
+      {showPropertyForm ? (
+  <PropertyForm
+    sellerId={seller.id}
+    onSubmit={handleCreateProperty}
+    onCancel={() => setShowPropertyForm(false)}
+  />
+) : (
+  <div className="flex flex-col gap-6">
+    <SellerInfo seller={seller} onUpdate={handleUpdateSeller} />
+    <div className="flex-1">
+      <PropertyList
+        properties={properties}
+        onDelete={handleDeleteProperty}
+        onAddProperty={() => setShowPropertyForm(true)}
+      />
     </div>
+  </div>
+)}
+     
+    </div>
+    </body>
+    
   );
 }

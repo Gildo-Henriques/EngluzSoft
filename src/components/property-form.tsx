@@ -1,220 +1,328 @@
 "use client";
-import { FC, useState, useCallback } from "react";
-import { Plus } from "lucide-react";
+import { useState, useCallback } from "react";
+import { useDropzone } from "react-dropzone";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
-
-export interface Property {
-  id: string;
-  title: string;
-  description: string;
-  salePrice?: number;
-  rentPrice?: number;
-  bedrooms: number;
-  area: number;
-  photos: string[];
-  location: string;
-  coordinates?: { lat: number; lng: number };
-}
-
-interface NewPropertyForm {
-  title: string;
-  description: string;
-  salePrice: number;
-  rentPrice: number;
-  bedrooms: number;
-  area: number;
-  photos: string[];
-  location: string;
-}
+import { Progress } from "@/components/ui/progress";
+import { Imovel } from "@/types";
 
 interface PropertyFormProps {
-  onCreate: (property: Property) => void;
+  sellerId: number;
+  onSubmit: (newProperty: Imovel) => void;
+  onCancel: () => void;
 }
 
-const mapContainerStyle = {
-  width: "100%",
-  height: "300px",
-};
-
-const defaultCenter = { lat: -8.8147, lng: 13.2302 }; // Luanda
-
-const PropertyForm: FC<PropertyFormProps> = ({ onCreate }) => {
-  const [newProperty, setNewProperty] = useState<NewPropertyForm>({
+export default function PropertyForm({ sellerId, onSubmit, onCancel }: PropertyFormProps) {
+  const [step, setStep] = useState(1);
+  const totalSteps = 4;
+  const [formData, setFormData] = useState({
     title: "",
     description: "",
-    salePrice: 0,
-    rentPrice: 0,
-    bedrooms: 0,
-    area: 0,
-    photos: [],
+    owner: "",
     location: "",
+    size: "",
+    bedrooms: "",
+    bathrooms: "",
+    price: "",
+    category: "venda",
+    garage: "",
+    yearBuilt: "",
+    image: "", // URL da imagem principal
+    images: [] as string[], // Array de URLs das imagens secundárias
   });
-  const [mapCoordinates, setMapCoordinates] = useState<{ lat: number; lng: number } | null>(null);
-  const [mapError, setMapError] = useState<string | null>(null);
+  const [submissionStatus, setSubmissionStatus] = useState<"idle" | "success" | "error">("idle");
 
-  const handleCreateProperty = () => {
-    if (!newProperty.title || !newProperty.location) {
-      alert("Título e localização são obrigatórios!");
-      return;
-    }
-    if (newProperty.bedrooms < 0 || newProperty.area < 0) {
-      alert("Quartos e área não podem ser negativos!");
-      return;
-    }
-    const property: Property = {
-      ...newProperty,
-      id: Math.random().toString(),
-      photos: newProperty.photos.length ? newProperty.photos : ["/images/default-property.jpg"],
-      salePrice: newProperty.salePrice || undefined,
-      rentPrice: newProperty.rentPrice || undefined,
-      coordinates: mapCoordinates || undefined,
-    };
-    onCreate(property);
-    setNewProperty({
-      title: "",
-      description: "",
-      salePrice: 0,
-      rentPrice: 0,
-      bedrooms: 0,
-      area: 0,
-      photos: [],
-      location: "",
+  // Configuração do react-dropzone para upload de imagens
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const newImages = acceptedFiles.map((file) => URL.createObjectURL(file));
+    setFormData((prev) => ({
+      ...prev,
+      image: prev.image || newImages[0] || "", // Define a primeira imagem como principal, se ainda não definida
+      images: [...prev.images, ...newImages], // Adiciona novas imagens à galeria
+    }));
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: { "image/*": [".png", ".jpg", ".jpeg"] },
+    multiple: true,
+  });
+
+  // Função para remover uma imagem da galeria
+  const removeImage = (index: number) => {
+    setFormData((prev) => {
+      const newImages = prev.images.filter((_, i) => i !== index);
+      const newImage = prev.image === prev.images[index] ? (newImages[0] || "") : prev.image;
+      return { ...prev, image: newImage, images: newImages };
     });
-    setMapCoordinates(null);
-    setMapError(null);
   };
 
-  const handleLocationChange = useCallback(async (location: string) => {
-    setNewProperty({ ...newProperty, location });
-    setMapError(null);
-    if (location) {
-      try {
-        const response = await fetch(
-          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-            location + ", Angola"
-          )}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
-        );
-        const data = await response.json();
-        if (data.status === "OK" && data.results.length > 0) {
-          const { lat, lng } = data.results[0].geometry.location;
-          setMapCoordinates({ lat, lng });
-        } else {
-          setMapCoordinates(null);
-          setMapError("Endereço não encontrado. Tente um endereço mais específico.");
-        }
-      } catch (error) {
-        console.error("Erro ao buscar coordenadas:", error);
-        setMapCoordinates(null);
-        setMapError("Erro ao carregar o mapa. Verifique a chave da API ou a conexão.");
+  const handleNext = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Validação por etapa
+    if (step === 1 && (!formData.title || !formData.description || !formData.owner)) {
+      alert("Por favor, preencha todos os campos obrigatórios da etapa 1.");
+      return;
+    }
+    if (
+      step === 2 &&
+      (!formData.location || !formData.size || !formData.bedrooms || !formData.bathrooms)
+    ) {
+      alert("Por favor, preencha todos os campos obrigatórios da etapa 2.");
+      return;
+    }
+    if (step === 3 && (!formData.price || !formData.category)) {
+      alert("Por favor, preencha todos os campos obrigatórios da etapa 3.");
+      return;
+    }
+    if (step === 4 && !formData.image) {
+      alert("Por favor, selecione pelo menos uma imagem principal na etapa 4.");
+      return;
+    }
+
+    if (step < totalSteps) {
+      setStep(step + 1);
+      if (step + 1 === totalSteps) {
+        alert("Prestes a Terminar! Adicione as imagens e finalize.");
       }
     } else {
-      setMapCoordinates(null);
+      // Submissão final
+      const bedrooms = parseInt(formData.bedrooms);
+      const bathrooms = parseInt(formData.bathrooms);
+      const garage = formData.garage ? parseInt(formData.garage) : undefined;
+      const yearBuilt = formData.yearBuilt ? parseInt(formData.yearBuilt) : undefined;
+
+      if (isNaN(bedrooms) || isNaN(bathrooms)) {
+        alert("Por favor, insira valores válidos para quartos e banheiros.");
+        setSubmissionStatus("error");
+        return;
+      }
+
+      const newProperty: Imovel = {
+        id: Date.now(),
+        title: formData.title,
+        location: formData.location,
+        price: formData.price,
+        category: formData.category,
+        description: formData.description,
+        size: formData.size,
+        bedrooms,
+        bathrooms,
+        garage,
+        yearBuilt,
+        image: formData.image,
+        images: formData.images,
+        owner: formData.owner,
+        seller: {
+          id: sellerId,
+          name: "",
+          photo: "",
+          contact: { whatsapp: "", phone: "", location: "" },
+        },
+        coordinates: { lat: 0, lng: 0 },
+      };
+
+      try {
+        onSubmit(newProperty);
+        setSubmissionStatus("success");
+        alert("Conclusão: Imóvel criado com sucesso!");
+      } catch (error) {
+        setSubmissionStatus("error");
+        alert("Erro ao criar imóvel. Tente novamente.");
+      }
     }
-  }, [newProperty]);
+  };
+
+  const handlePrevious = () => {
+    if (step > 1) {
+      setStep(step - 1);
+    }
+  };
+
+  const progressValue = (step / totalSteps) * 100;
 
   return (
-    <div className="flex flex-col gap-4 mb-6">
-      <h3 className="text-lg font-semibold">Criar Novo Anúncio</h3>
-      <Input
-        placeholder="Título do Imóvel (ex.: Apartamento em Talatona)"
-        value={newProperty.title}
-        onChange={(e) => setNewProperty({ ...newProperty, title: e.target.value })}
-      />
-      <Input
-        placeholder="Descrição"
-        value={newProperty.description}
-        onChange={(e) => setNewProperty({ ...newProperty, description: e.target.value })}
-      />
-      <Input
-        type="number"
-        placeholder="Valor da Venda (AOA)"
-        value={newProperty.salePrice || ""}
-        onChange={(e) =>
-          setNewProperty({
-            ...newProperty,
-            salePrice: e.target.value ? Number(e.target.value) : 0,
-          })
-        }
-      />
-      <Input
-        type="number"
-        placeholder="Valor da Renda (AOA/mês)"
-        value={newProperty.rentPrice || ""}
-        onChange={(e) =>
-          setNewProperty({
-            ...newProperty,
-            rentPrice: e.target.value ? Number(e.target.value) : 0,
-          })
-        }
-      />
-      <Input
-        type="number"
-        placeholder="Número de Quartos"
-        value={newProperty.bedrooms || ""}
-        onChange={(e) =>
-          setNewProperty({
-            ...newProperty,
-            bedrooms: e.target.value ? Number(e.target.value) : 0,
-          })
-        }
-      />
-      <Input
-        type="number"
-        placeholder="Área (m²)"
-        value={newProperty.area || ""}
-        onChange={(e) =>
-          setNewProperty({
-            ...newProperty,
-            area: e.target.value ? Number(e.target.value) : 0,
-          })
-        }
-      />
-      <Input
-        placeholder="Localização (ex.: Maianga, Luanda)"
-        value={newProperty.location}
-        onChange={(e) => handleLocationChange(e.target.value)}
-        aria-label="Digite o endereço do imóvel"
-      />
-      <LoadScript
-        googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}
-        onError={(error) => {
-          console.error("Erro ao carregar a API do Google Maps:", error);
-          setMapError("Erro ao carregar o mapa. Verifique a chave da API.");
-        }}
-      >
-        {newProperty.location && (
-          <div>
-            {mapError ? (
-              <p className="text-red-600">{mapError}</p>
-            ) : (
-              <GoogleMap
-                mapContainerStyle={mapContainerStyle}
-                center={mapCoordinates || defaultCenter}
-                zoom={15}
+    <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
+      <h2 className="text-2xl font-bold mb-4">Anunciar Novo Imóvel - Etapa {step} de {totalSteps}</h2>
+      <Progress value={progressValue} className="mb-6" aria-label={`Progresso: ${progressValue}% concluído`} />
+
+      {submissionStatus === "success" ? (
+        <div className="text-center">
+          <h3 className="text-xl font-semibold text-green-600">Imóvel Criado com Sucesso!</h3>
+          <p className="text-gray-600 mt-2">Seu imóvel foi adicionado ao catálogo.</p>
+          <Button
+            onClick={onCancel}
+            className="mt-4 bg-blue-500 hover:bg-blue-400 text-white"
+          >
+            Voltar ao Perfil
+          </Button>
+        </div>
+      ) : (
+        <form onSubmit={handleNext} className="space-y-4" aria-label={`Formulário de anúncio de imóvel - Etapa ${step}`}>
+          {step === 1 && (
+            <>
+              <Input
+                type="text"
+                placeholder="Título"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                required
+              />
+              <Input
+                type="text"
+                placeholder="Descrição"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                required
+              />
+              <Input
+                type="text"
+                placeholder="Proprietário"
+                value={formData.owner}
+                onChange={(e) => setFormData({ ...formData, owner: e.target.value })}
+                required
+              />
+            </>
+          )}
+          {step === 2 && (
+            <>
+              <Input
+                type="text"
+                placeholder="Localização"
+                value={formData.location}
+                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                required
+              />
+              <Input
+                type="text"
+                placeholder="Área (ex.: 120m²)"
+                value={formData.size}
+                onChange={(e) => setFormData({ ...formData, size: e.target.value })}
+                required
+              />
+              <Input
+                type="number"
+                placeholder="Quartos"
+                value={formData.bedrooms}
+                onChange={(e) => setFormData({ ...formData, bedrooms: e.target.value })}
+                required
+              />
+              <Input
+                type="number"
+                placeholder="Banheiros"
+                value={formData.bathrooms}
+                onChange={(e) => setFormData({ ...formData, bathrooms: e.target.value })}
+                required
+              />
+            </>
+          )}
+          {step === 3 && (
+            <>
+              <Input
+                type="text"
+                placeholder="Preço (ex.: 225,000,000 AOA)"
+                value={formData.price}
+                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                required
+              />
+              <Input
+                type="text"
+                placeholder="Categoria (venda, renda, terreno)"
+                value={formData.category}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                required
+              />
+              <Input
+                type="number"
+                placeholder="Garagem (opcional)"
+                value={formData.garage}
+                onChange={(e) => setFormData({ ...formData, garage: e.target.value })}
+              />
+              <Input
+                type="number"
+                placeholder="Ano de Construção (opcional)"
+                value={formData.yearBuilt}
+                onChange={(e) => setFormData({ ...formData, yearBuilt: e.target.value })}
+              />
+            </>
+          )}
+          {step === 4 && (
+            <>
+              <div
+                {...getRootProps()}
+                className={`border-dashed border-2 p-6 text-center rounded-lg ${
+                  isDragActive ? "bg-blue-100" : "bg-gray-100"
+                }`}
               >
-                {mapCoordinates && <Marker position={mapCoordinates} />}
-              </GoogleMap>
+                <input {...getInputProps()} />
+                <p className="text-gray-600">
+                  {isDragActive
+                    ? "Solte as imagens aqui..."
+                    : "Arraste e solte imagens aqui ou clique para selecionar (PNG, JPG, JPEG)"}
+                </p>
+              </div>
+              {formData.images.length > 0 && (
+                <div className="grid grid-cols-3 gap-4 mt-4">
+                  {formData.images.map((image, index) => (
+                    <div key={index} className="relative">
+                      <Image
+                        src={image}
+                        alt={`Pré-visualização da imagem ${index + 1}`}
+                        width={100}
+                        height={100}
+                        className="w-full h-24 object-cover rounded"
+                      />
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="absolute top-0 right-0 p-1"
+                        onClick={() => removeImage(index)}
+                        aria-label={`Remover imagem ${index + 1}`}
+                      >
+                        X
+                      </Button>
+                      {image === formData.image && (
+                        <span className="absolute bottom-0 left-0 bg-blue-500 text-white text-xs px-1 rounded">
+                          Principal
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+          <div className="flex gap-4 justify-between">
+            {step > 1 && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handlePrevious}
+                className="border-gray-300 text-gray-700"
+              >
+                Anterior
+              </Button>
             )}
+            <div className="flex gap-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onCancel}
+                className="border-gray-300 text-gray-700"
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                className="bg-blue-500 hover:bg-blue-400 text-white"
+              >
+                {step === totalSteps ? "Criar Imóvel" : "Próximo"}
+              </Button>
+            </div>
           </div>
-        )}
-      </LoadScript>
-      <Input
-        placeholder="URLs das Fotos (separadas por vírgula)"
-        value={newProperty.photos.join(",")}
-        onChange={(e) =>
-          setNewProperty({
-            ...newProperty,
-            photos: e.target.value ? e.target.value.split(",") : [],
-          })
-        }
-      />
-      <Button onClick={handleCreateProperty}>
-        <Plus size={20} className="mr-2" /> Criar Anúncio
-      </Button>
+        </form>
+      )}
     </div>
   );
-};
-
-export default PropertyForm;
+}
