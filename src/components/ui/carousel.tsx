@@ -147,7 +147,7 @@ export function CarouselHeroCard() {
               style={{ transform: `translateX(-${currentSlide * 100}%)` }}
             >
               {carouselItems.map((item, index) => (
-                <div key={index} className="min-w-full h-48 relative overflow-hidden rounded-xl">
+                <div key={index} className="min-w-full  h-48 relative overflow-hidden rounded-xl">
                   <DivBlackTranparent title={item.title} text={item.text} />
                   <Image
                     src={item.image}
@@ -191,9 +191,9 @@ export function CarouselHeroCard() {
         </div>
 
         {/* Layout flex para desktop (visível em telas >=lg) */}
-        <div className="hidden lg:flex justify-between">
+        <div className="hidden space-x-5 lg:flex justify-between">
           {carouselItems.map((item, index) => (
-            <div key={index} className="lg:h-48 lg:w-60 relative overflow-hidden rounded-xl">
+            <div key={index} className="lg:h-48  lg:w-60 relative overflow-hidden rounded-xl">
               <DivBlackTranparent title={item.title} text={item.text} />
               <Image
                 src={item.image}
