@@ -11,7 +11,7 @@ export default function Home() {
         <Cta />
         <section className="flex flex-col items-center justify-center">
           <h2 className="text-3xl font-bold mb-6">FaQ</h2>
-          <div className="w-[500px]">
+          <div className="lg:w-[500px] px-5 w-full">
         <Faq/>
           </div>
         </section>

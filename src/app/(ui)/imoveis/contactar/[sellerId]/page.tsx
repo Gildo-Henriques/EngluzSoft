@@ -32,11 +32,11 @@ export default function ContactarVendedor({ params }: PageProps) {
   }
 
   return (
-    <section className="w-full px-4 sm:px-6 md:px-10 lg:px-16 2xl:px-28 py-10 flex flex-col space-y-8">
-      <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold titillium-web-semibold">
-        Contactar {seller.name}
-      </h1>
-      <div className="space-y-4">
+    <section className="w-full ">
+      
+      
+      <div className="max-w-2xl mx-auto px-4 flex flex-col space-y-8">
+        <div className="space-y-4 mt-20">
         <h2 className="text-xl font-semibold">Imóveis do Vendedor</h2>
         <div className="flex flex-wrap gap-4">
           {imoveis.map((imovel) => (
@@ -51,7 +51,6 @@ export default function ContactarVendedor({ params }: PageProps) {
           ))}
         </div>
       </div>
-      <div className="max-w-2xl mx-auto w-full">
         <SellerInfo seller={seller} readOnly />
       </div>
     </section>

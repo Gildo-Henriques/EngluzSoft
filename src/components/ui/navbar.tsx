@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { Menu, Search, ShoppingCart } from 'lucide-react';
+import Link from "next/link";
+import { Menu, Search, ShoppingCart } from "lucide-react";
 import {
   Sheet,
   SheetTrigger,
@@ -9,32 +9,32 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-} from './sheet';
-import { Button } from './button';
-import { useEffect, useState, useRef } from 'react';
+} from "./sheet";
+import { Button } from "./button";
+import { useEffect, useState, useRef } from "react";
 
 // Sugestões de pesquisa, incluindo todos os municípios de Luanda
 const searchSuggestions = [
-  'Apartamentos',
-  'Casas',
-  'Terrenos',
-  'Imóveis à Venda',
-  'Imóveis para Alugar',
-  'Luanda',
-  'Belas',
-  'Cacuaco',
-  'Cazenga',
-  'Icolo e Bengo',
-  'Quilamba',
-  'Viana',
-  'Talatona',
-  'Kilamba',
+  "Apartamentos",
+  "Casas",
+  "Terrenos",
+  "Imóveis à Venda",
+  "Imóveis para Alugar",
+  "Luanda",
+  "Belas",
+  "Cacuaco",
+  "Cazenga",
+  "Icolo e Bengo",
+  "Quilamba",
+  "Viana",
+  "Talatona",
+  "Kilamba",
 ];
 
 export default function HeaderNavbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Lógica de scroll para mudar o fundo do header
@@ -42,8 +42,8 @@ export default function HeaderNavbar() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Focar no input quando aberto
@@ -59,41 +59,45 @@ export default function HeaderNavbar() {
       if (
         searchInputRef.current &&
         !searchInputRef.current.contains(event.target as Node) &&
-        !(event.target as HTMLElement).closest('.search-suggestions') &&
-        !(event.target as HTMLElement).closest('.search-button')
+        !(event.target as HTMLElement).closest(".search-suggestions") &&
+        !(event.target as HTMLElement).closest(".search-button")
       ) {
         setIsSearchOpen(false);
       }
     };
     const handleEsc = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setIsSearchOpen(false);
+      if (event.key === "Escape") setIsSearchOpen(false);
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleEsc);
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEsc);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEsc);
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEsc);
     };
   }, []);
 
   // Submeter a pesquisa
   const handleSearch = () => {
     if (searchQuery.trim()) {
-      window.location.href = `/imoveis?query=${encodeURIComponent(searchQuery)}`;
+      window.location.href = `/imoveis?query=${encodeURIComponent(
+        searchQuery
+      )}`;
       setIsSearchOpen(false);
-      setSearchQuery('');
+      setSearchQuery("");
     }
   };
 
   return (
     <header
       className={`fixed w-full h-14 flex shadow-2xs items-center z-50 transition-all duration-300 px-4 sm:px-6 md:px-10 top-0 lg:px-16 2xl:px-28 ${
-        isScrolled ? 'bg-white text-black' : 'bg-transparent text-gray-400'
+        isScrolled ? "bg-white text-black" : "bg-transparent text-gray-400"
       }`}
     >
       <div className="flex w-full justify-between items-center">
         {/* Logo */}
-        <span className="font-semibold text-lg">EngluzSoft</span>
+        <Link href={"/"}>
+          <span className="font-semibold text-lg">EngluzSoft</span>
+        </Link>
         <div className="flex items-center space-x-4">
           {/* Ícone de Pesquisa */}
           <div className="relative">
@@ -127,16 +131,20 @@ export default function HeaderNavbar() {
                 <div className="search-suggestions max-h-60 overflow-y-auto rounded-b-lg">
                   {searchSuggestions
                     .filter((suggestion) =>
-                      suggestion.toLowerCase().includes(searchQuery.toLowerCase())
+                      suggestion
+                        .toLowerCase()
+                        .includes(searchQuery.toLowerCase())
                     )
                     .map((suggestion, index) => (
                       <Link
                         key={index}
-                        href={`/imoveis?query=${encodeURIComponent(suggestion)}`}
+                        href={`/imoveis?query=${encodeURIComponent(
+                          suggestion
+                        )}`}
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                         onClick={() => {
                           setIsSearchOpen(false);
-                          setSearchQuery('');
+                          setSearchQuery("");
                         }}
                       >
                         {suggestion}
@@ -147,7 +155,10 @@ export default function HeaderNavbar() {
             )}
           </div>
           {/* Ícone de Carrinho */}
-          <Link href="/carrinho" className="relative flex items-center cursor-pointer">
+          <Link
+            href="/carrinho"
+            className="relative flex items-center cursor-pointer"
+          >
             <div className="bg-red-500 w-4 h-4 flex items-center justify-center absolute -top-1 -right-1 text-xs text-white rounded-full">
               <span>0</span>
             </div>
@@ -155,7 +166,10 @@ export default function HeaderNavbar() {
           </Link>
           {/* Menu Mobile */}
           <Sheet>
-            <SheetTrigger className="lg:hidden flex items-center cursor-pointer" asChild>
+            <SheetTrigger
+              className="lg:hidden flex items-center cursor-pointer"
+              asChild
+            >
               <button aria-label="Abrir menu">
                 <Menu size={20} />
               </button>
@@ -170,10 +184,16 @@ export default function HeaderNavbar() {
                   <ShoppingCart size={20} />
                   <span>Carrinho</span>
                 </Link>
-                <Link href="/auth/signin" className="flex items-center space-x-2">
+                <Link
+                  href="/auth/signin"
+                  className="flex items-center space-x-2"
+                >
                   <span>Entrar</span>
                 </Link>
-                <Link href="/auth/signout" className="flex items-center space-x-2">
+                <Link
+                  href="/auth/signup"
+                  className="flex items-center space-x-2"
+                >
                   <Button className="bg-blue-500 text-white hover:bg-blue-400 w-full">
                     Criar conta
                   </Button>
@@ -186,7 +206,7 @@ export default function HeaderNavbar() {
             <Link href="/auth/signin" className="flex items-center">
               <span>Entrar</span>
             </Link>
-            <Link href="/auth/signout">
+            <Link href="/auth/signup">
               <Button className="bg-blue-500 text-white hover:bg-blue-400">
                 Criar conta
               </Button>

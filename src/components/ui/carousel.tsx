@@ -5,7 +5,8 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from './button';
 import { Children } from 'react';
 import Image from 'next/image';
-
+import Link from 'next/link';
+import AnnounceModal from './modal'; // Importe o modal
 // Seu componente DivBlackTranparent
 interface Props {
   title?: string;
@@ -28,27 +29,41 @@ interface CarouselProps {
 
 export function CarouselHero({ children }: CarouselProps) {
   const [curr, setCurr] = useState(0);
-  const slides = Children.toArray(children); // Converte ReactNode em array
+  const [isModalOpen, setIsModalOpen] = useState(false); // Estado do modal
+  const slides = Children.toArray(children);
 
   const prev = () =>
     setCurr((curr) => (curr === 0 ? slides.length - 1 : curr - 1));
   const next = () =>
     setCurr((curr) => (curr === slides.length - 1 ? 0 : curr + 1));
+
   useEffect(() => {
     const slideInterval = setInterval(next, 4000);
     return () => clearInterval(slideInterval);
   }, [curr]);
+
   return (
     <div className="max-w-full flex flex-col items-center justify-center relative">
       <div className="overflow-hidden h-[500px] relative w-full">
         <div className="h-full flex-col w-full z-10 text-white absolute px-5 flex items-center justify-center top-0 left-0 bg-gradient-to-t from-black/90 to-black/50 space-y-2">
-          <span className="border rounded-full px-5 py-1">Sistema de geoprocessamento imobiliário</span>
-          <h1 className="sm:text-4xl text-3xl text-center titillium-web-semibold">
+          <span className="border rounded-full text-center text-xs lg:text-sm px-5 py-1">
+            Sistema de geoprocessamento imobiliário
+          </span>
+          <h1 className="sm:text-4xl text-2xl text-center titillium-web-semibold">
             Encontre, compre e venda imóveis em Luanda com <br className="lg:flex hidden" /> segurança garantida
           </h1>
           <div className="flex space-x-2 mt-5 items-center">
-            <Button className="bg-white px-5 py-2 text-black hover:bg-slate-300">Procurar Imóveis</Button>
-            <Button className="bg-blue-500 hover:bg-blue-400 px-5 py-2 text-white ">Anunciar Imóveis</Button>
+            <Link href={'/imoveis/todos'}>
+              <Button className="bg-white px-5 py-2 text-black hover:bg-slate-300">
+                Procurar Imóveis
+              </Button>
+            </Link>
+            <Button
+              className="bg-blue-500 hover:bg-blue-400 px-5 py-2 text-white"
+              onClick={() => setIsModalOpen(true)} // Abre o modal
+            >
+              Anunciar Imóveis
+            </Button>
           </div>
         </div>
         <div
@@ -63,13 +78,18 @@ export function CarouselHero({ children }: CarouselProps) {
         </div>
       </div>
       <div className="absolute top-1/2 transform z-10 -translate-y-1/2 w-full flex justify-between px-5">
-        <Button className="text-white bg-transparent" onClick={prev}>
+        <Button className="text-white bg-transparent lg:flex hidden" onClick={prev}>
           <ChevronLeft size={40} />
         </Button>
-        <Button className="text-white bg-transparent" onClick={next}>
+        <Button className="text-white bg-transparent lg:flex hidden" onClick={next}>
           <ChevronRight size={40} />
         </Button>
       </div>
+      {/* Modal */}
+      <AnnounceModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }
